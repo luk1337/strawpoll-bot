@@ -58,7 +58,7 @@ class StrawPoll:
             return False
 
 class StrawPollBot:
-    import thread, threading, time
+    import threading, time
 
     strawpoll = None
 
@@ -70,14 +70,13 @@ class StrawPollBot:
             print("%s - %s - %d/%d" % (proxy, self.strawpoll.vote(options, {"http": proxy}), proxies.index(proxy), len(proxies)))
 
     def start(self, options, proxies):
-        for i in range(0, len(proxies), 20):
-            try:
-                self.thread.start_new(self.vote, (options, proxies[i:i + 20]))
-            except:
-                pass
+        threads = []
 
-        while self.threading.active_count() > 0:
-            pass
+        for i in range(0, len(proxies), 20):
+            threads.append(self.threading.Thread(target=self.vote, args=(options, proxies[i:i + 20])))
+
+        [ thread.start() for thread in threads ]
+        [ thread.join() for thread in threads ]
 
 if __name__ == "__main__":
     pollId = input("Please enter the poll id: ")
