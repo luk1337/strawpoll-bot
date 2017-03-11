@@ -67,7 +67,7 @@ class StrawPollBot:
     def start(self, options, proxies):
         for i in range(0, len(proxies), 20):
             try:
-                self.thread.start_new(self.vote, (options, proxies[i:]))
+                self.thread.start_new(self.vote, (options, proxies[i:i + 20]))
             except:
                 pass
 
