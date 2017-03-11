@@ -34,11 +34,16 @@ class StrawPoll:
 
             return html.xpath('//*[@id="field-security-token"]')[0].get("value")
         except:
-            return ""
+            return None
 
     def vote(self, options, proxy = None):
         try:
-            data = [("security-token", self.getSecurityToken(proxy))]
+            token = self.getSecurityToken(proxy)
+
+            if token == None:
+                return False
+
+            data = [("security-token", token)]
 
             for option in strawpoll.getOptions(proxy):
                 if (type(options) is tuple and option['value'] in options) or (
