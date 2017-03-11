@@ -65,15 +65,17 @@ class StrawPollBot:
     def __init__(self, strawpoll):
         self.strawpoll = strawpoll
 
-    def vote(self, options, proxies):
+    def vote(self, threadId, options, proxies):
         for proxy in proxies:
-            print("%s - %s - %d/%d" % (proxy, self.strawpoll.vote(options, {"http": proxy}), proxies.index(proxy), len(proxies)))
+            print("threadId: %d [ proxy: %s - result: %s - status: %d/%d ]" % (threadId, proxy, self.strawpoll.vote(options, {"http": proxy}), proxies.index(proxy), len(proxies)))
 
     def start(self, options, proxies):
         threads = []
+        threadId = 0
 
         for i in range(0, len(proxies), 20):
-            threads.append(self.threading.Thread(target=self.vote, args=(options, proxies[i:i + 20])))
+            threads.append(self.threading.Thread(target=self.vote, args=(threadId, options, proxies[i:i + 20])))
+            threadId += 1
 
         [ thread.start() for thread in threads ]
         [ thread.join() for thread in threads ]
