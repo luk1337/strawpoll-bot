@@ -13,7 +13,7 @@ class StrawPoll:
         self.id = id
 
     def getOptions(self, proxy = None):
-        request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy)
+        request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
         html = self.lxml.html.fromstring(request.text)
 
         options = []
@@ -29,7 +29,7 @@ class StrawPoll:
 
     def getSecurityToken(self, proxy = None):
         try:
-            request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy)
+            request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
             html = self.lxml.html.fromstring(request.text)
 
             return html.xpath('//*[@id="field-security-token"]')[0].get("value")
@@ -50,7 +50,7 @@ class StrawPoll:
                         type(options) is int and option['value'] == options):
                     data.append((option['name'], option['value']))
 
-            request = self.requests.post("%s/%d" % (self.url, self.id), headers=self.headers, data=data, proxies=proxy)
+            request = self.requests.post("%s/%d" % (self.url, self.id), headers=self.headers, data=data, proxies=proxy, timeout=10)
             json = self.json.loads(request.text)
 
             return json['success'] == "success"
