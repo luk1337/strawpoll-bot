@@ -1,6 +1,5 @@
 class StrawPoll:
     import requests, lxml.html, json
-    from urllib3._collections import HTTPHeaderDict
 
     url = "http://www.strawpoll.me"
     headers = {
