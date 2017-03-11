@@ -67,7 +67,7 @@ class StrawPollBot:
 
     def vote(self, options, proxies):
         for proxy in proxies:
-            print("%s - %s" % (proxy, self.strawpoll.vote(options, {"http": proxy})))
+            print("%s - %s - %d/%d" % (proxy, self.strawpoll.vote(options, {"http": proxy}), proxies.index(proxy), len(proxies)))
 
     def start(self, options, proxies):
         for i in range(0, len(proxies), 20):
