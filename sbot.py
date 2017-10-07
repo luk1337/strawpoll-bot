@@ -13,7 +13,7 @@ class StrawPoll:
         self.id = id
 
     def getOptions(self, proxy = None):
-        request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
+        request = self.requests.get("%s/%s" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
         html = self.lxml.html.fromstring(request.text)
 
         options = []
@@ -27,32 +27,31 @@ class StrawPoll:
 
         return options
 
-    def getSecurityToken(self, proxy = None):
+    def getTokens(self, proxy = None):
         try:
-            request = self.requests.get("%s/%d" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
+            request = self.requests.get("%s/%s" % (self.url, self.id), headers=self.headers, proxies=proxy, timeout=10)
             html = self.lxml.html.fromstring(request.text)
 
-            return html.xpath('//*[@id="field-security-token"]')[0].get("value")
+            return [html.xpath('//*[@id="field-security-token"]')[0].get("value"), html.xpath('//*[@id="field-authenticity-token"]')[0].get("name")]
         except:
             return None
 
     def vote(self, options, proxy = None):
         try:
-            token = self.getSecurityToken(proxy)
+            tokens = self.getTokens(proxy)
 
-            if token == None:
+            if tokens == None:
                 return False
 
-            data = [("security-token", token)]
+            data = [("security-token", tokens[0]), (tokens[1], "")]
 
             for option in strawpoll.getOptions(proxy):
                 if (type(options) is tuple and option['value'] in options) or (
-                        type(options) is int and option['value'] == options):
+                        type(options) is str and str(option['value']) == options):
                     data.append((option['name'], option['value']))
 
-            request = self.requests.post("%s/%d" % (self.url, self.id), headers=self.headers, data=data, proxies=proxy, timeout=10)
+            request = self.requests.post("%s/%s" % (self.url, self.id), headers=self.headers, data=data, proxies=proxy, timeout=10)
             json = self.json.loads(request.text)
-
             return json['success'] == "success"
         except:
             return False
