@@ -45,6 +45,9 @@ class StrawPoll:
 
             data = [("security-token", tokens[0]), (tokens[1], "")]
 
+            if type(options) is str:
+                data.append(("options", options))
+
             for option in strawpoll.getOptions(proxy):
                 if (type(options) is tuple and option['value'] in options) or (
                         type(options) is str and str(option['value']) == options):
