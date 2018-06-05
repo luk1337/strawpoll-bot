@@ -45,7 +45,7 @@ class StrawPoll:
 
             data = [("security-token", tokens[0]), (tokens[1], "")]
 
-            if type(options) is str:
+            if type(options) is str or type(options) is int:
                 data.append(("options", options))
 
             for option in strawpoll.getOptions(proxy):
@@ -69,7 +69,7 @@ class StrawPollBot:
 
     def vote(self, threadId, options, proxies):
         for proxy in proxies:
-            print("threadId: %d [ proxy: %s - result: %s - status: %d/%d ]" % (threadId, proxy, self.strawpoll.vote(options, {"http": proxy}), proxies.index(proxy), len(proxies)))
+            print("threadId: %d [ proxy: %s - result: %s - status: %d/%d ]" % (threadId, proxy, self.strawpoll.vote(options, {"https": proxy}), proxies.index(proxy), len(proxies)))
 
     def start(self, options, proxies):
         threads = []
